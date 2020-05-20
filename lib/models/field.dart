@@ -11,10 +11,7 @@ class Field {
   bool _mined = false;
   bool _exploded = false;
 
-  Field({
-    @required this.line,
-    @required this.column
-  });
+  Field({@required this.line, @required this.column});
 
   void addNeighbor(Field neighbor) {
     final deltaLine = (line - neighbor.line).abs();
@@ -42,14 +39,57 @@ class Field {
 
     if (safeNeighborhood) {
       neighbors.forEach((v) => v.open());
-    }  
+    }
+  }
+
+  void revealBombs() {
+    if (_mined) {
+      _open = true;
+    }
+  }
+
+  void mine() {
+    _mined = true;
+  }
+
+  void changeMarkup() {
+    _marked = !_marked;
+  }
+
+  void restart() {
+    _open = false;
+    _marked = false;
+    _mined = false;
+    _exploded = false;
   }
 
   bool get mined {
     return _mined;
   }
 
+  bool get exploded {
+    return _exploded;
+  }
+
+  bool get opened {
+    return _open;
+  }
+
+  bool get marked {
+    return _marked;
+  }
+
+  bool get sortedOut {
+    bool minedAndMarked = mined && marked;
+    bool safeAndOpen = !mined && opened;
+    return minedAndMarked || safeAndOpen;
+  }
+
   bool get safeNeighborhood {
     return neighbors.every((v) => !v.mined);
+  }
+
+  int get numberMinesNeighbors {
+    return neighbors.where((v) => v.mined).length;
   }
 }
