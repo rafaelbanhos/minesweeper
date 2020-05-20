@@ -24,7 +24,32 @@ class Field {
       return;
     }
     if (deltaLine <= 1 && deltaColumn <= 1) {
-
+      neighbors.add(neighbor);
     }
+  }
+
+  void open() {
+    if (_open) {
+      return;
+    }
+
+    _open = true;
+
+    if (_mined) {
+      _exploded = true;
+      throw ExplosionException();
+    }
+
+    if (safeNeighborhood) {
+      neighbors.forEach((v) => v.open());
+    }  
+  }
+
+  bool get mined {
+    return _mined;
+  }
+
+  bool get safeNeighborhood {
+    return neighbors.every((v) => !v.mined);
   }
 }
