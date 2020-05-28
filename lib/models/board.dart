@@ -48,7 +48,7 @@ class Board {
   void _drawMines() {
     int drawn = 0;
 
-    if (numberBombs < lines * columns) {
+    if (numberBombs > lines * columns) {
       return;
     }
 
