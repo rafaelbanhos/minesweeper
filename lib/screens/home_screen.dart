@@ -12,11 +12,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _won;
-  Board _board = Board(
-    lines: 12,
-    columns: 12,
-    numberBombs: 3,
-  );
+  Board _board;
 
   void _restart() {
     setState(() {
@@ -54,6 +50,18 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Board _getBoard(double width, double height) {
+    if (_board == null) {
+      int numberColumns = 15;
+      double fieldSize = width / numberColumns;
+      int numberLines = (height / fieldSize).floor();
+
+      _board =
+          Board(lines: numberLines, columns: numberColumns, numberBombs: 3);
+    }
+    return _board;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -63,10 +71,18 @@ class _HomeScreenState extends State<HomeScreen> {
           onRestart: _restart,
         ),
         body: Container(
-          child: BoardWidget(
-            board: _board,
-            onOpen: _open,
-            onSwitchMarkup: _switchMarkup,
+          color: Colors.grey,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return BoardWidget(
+                board: _getBoard(
+                    constraints.maxWidth,
+                    constraints.maxHeight
+                ),
+                onOpen: _open,
+                onSwitchMarkup: _switchMarkup,
+              );
+            },
           ),
         ),
       ),
